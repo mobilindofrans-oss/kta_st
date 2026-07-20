@@ -190,23 +190,7 @@ async function exportKTAPDF() {
     }
     loadSavedData();
 
-    // PERBAIKAN: Ubah CSS foto sementara untuk capture
-    const imgElement = element.querySelector('#previewFoto');
-    const photoContainer = element.querySelector('.kta-photo');
-    let originalImgStyle = '';
-    let originalContainerStyle = '';
-    
-    if (imgElement && imgElement.src && currentFoto) {
-      originalImgStyle = imgElement.style.cssText;
-      originalContainerStyle = photoContainer.style.cssText;
-      
-      // Force ukuran gambar sesuai container
-      imgElement.style.width = '100%';
-      imgElement.style.height = '100%';
-      imgElement.style.objectFit = 'fill';
-    }
-
-    // Capture KTA
+    // Capture KTA tanpa foto
     const canvas = await html2canvas(element, {
       scale: 2,
       useCORS: true,
@@ -214,15 +198,34 @@ async function exportKTAPDF() {
       allowTaint: true
     });
 
-    // Kembalikan CSS foto
-    if (imgElement && currentFoto) {
-      imgElement.style.cssText = originalImgStyle;
-      photoContainer.style.cssText = originalContainerStyle;
+    // Jika ada foto, gambar ulang dengan ukuran tepat
+    if (currentFoto) {
+      const img = new Image();
+      img.src = currentFoto;
+      await new Promise(resolve => { img.onload = resolve; });
+      
+      const photoEl = element.querySelector('.kta-photo');
+      const cardEl = element;
+      
+      if (photoEl) {
+        const cardRect = cardEl.getBoundingClientRect();
+        const photoRect = photoEl.getBoundingClientRect();
+        
+        // Posisi foto relatif terhadap card (dalam px, bukan scaled)
+        const x = photoRect.left - cardRect.left;
+        const y = photoRect.top - cardRect.top;
+        const w = photoEl.clientWidth;
+        const h = photoEl.clientHeight;
+        
+        // Gambar di canvas (scale 2)
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, x * 2, y * 2, w * 2, h * 2);
+      }
     }
 
     const imgData = canvas.toDataURL('image/png');
 
-    // Preview ratio: 260px x 400px = 69.1mm x 105.8mm
+    // Preview: 260px x 400px = 69.1mm x 105.8mm
     const pdfWidth = 69.1;
     const pdfHeight = 105.8;
     
