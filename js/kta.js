@@ -190,29 +190,35 @@ async function exportKTAPDF() {
     }
     loadSavedData();
 
-    // PERBAIKAN UTAMA: Pastikan semua gambar di dalam KTA benar-benar selesai dimuat sebelum dicapture
-    const images = element.getElementsByTagName('img');
-    const imagePromises = Array.from(images).map(img => {
-      if (img.src && !img.complete) {
-        return new Promise(resolve => {
-          img.onload = resolve;
-          img.onerror = resolve;
-        });
-      }
-      return Promise.resolve();
-    });
+    // PERBAIKAN: Ubah CSS foto sementara untuk capture
+    const imgElement = element.querySelector('#previewFoto');
+    const photoContainer = element.querySelector('.kta-photo');
+    let originalImgStyle = '';
+    let originalContainerStyle = '';
     
-    await Promise.all(imagePromises);
+    if (imgElement && imgElement.src && currentFoto) {
+      originalImgStyle = imgElement.style.cssText;
+      originalContainerStyle = photoContainer.style.cssText;
+      
+      // Force ukuran gambar sesuai container
+      imgElement.style.width = '100%';
+      imgElement.style.height = '100%';
+      imgElement.style.objectFit = 'fill';
+    }
 
-    // Capture KTA dengan konfigurasi optimasi render objek gambar
+    // Capture KTA
     const canvas = await html2canvas(element, {
-      scale: 3, // Ditingkatkan ke 3 untuk ketajaman teks dan gambar yang lebih tinggi
+      scale: 2,
       useCORS: true,
       logging: false,
-      allowTaint: false, // Diubah ke false jika menggunakan useCORS agar tidak mengotori canvas
-      imageTimeout: 0,   // Menghilangkan batasan waktu tunggu muat gambar
-      backgroundColor: null // Menjaga transparansi atau warna dasar bawaan CSS
+      allowTaint: true
     });
+
+    // Kembalikan CSS foto
+    if (imgElement && currentFoto) {
+      imgElement.style.cssText = originalImgStyle;
+      photoContainer.style.cssText = originalContainerStyle;
+    }
 
     const imgData = canvas.toDataURL('image/png');
 
