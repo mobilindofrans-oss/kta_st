@@ -180,17 +180,10 @@ async function exportKTAPDF() {
     }
     loadSavedData();
 
-    // Capture with higher scale for better quality
     const canvas = await html2canvas(element, {
-      scale: 4,
+      scale: 2,
       useCORS: true,
-      logging: false,
-      width: element.scrollWidth,
-      height: element.scrollHeight,
-      x: 0,
-      y: 0,
-      scrollX: 0,
-      scrollY: 0
+      logging: false
     });
 
     const imgData = canvas.toDataURL('image/png');
