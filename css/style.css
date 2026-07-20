@@ -486,17 +486,6 @@ body {
 
 
 
-.kta-qr {
-  flex-shrink: 0;
-}
-
-.kta-logo-img {
-  width: 160px;
-  height: auto;
-  object-fit: contain;
-  margin-bottom: 8px;
-}
-
 .kta-no-id {
   font-size: 11px;
   font-weight: 600;
@@ -504,7 +493,8 @@ body {
   margin-bottom: 12px;
   width: 100%;
   text-align: center;
-  margin-top: 8px;
+  margin-top: 70px;
+  margin-left: 52px;
 }
 
 .kta-no-id .id-label {
@@ -512,16 +502,23 @@ body {
   font-weight: 700;
 }
 
+.kta-bottom-content {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .kta-photo {
-  width: 120px;
-  height: 150px;
+  width: 200px;
+  height: 160px;
   border-radius: var(--radius-sm);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
-  margin-left: auto;
+  margin-left: 30px;
+  margin-bottom: 6px;
 }
 
 .kta-photo img {
@@ -543,37 +540,68 @@ body {
   opacity: 0.5;
 }
 
-.kta-info-list {
-  width: 120px;
+.kta-masa-berlaku {
+  margin-top: 6px;
+  margin-left: 68px;
+  background: #1565c0;
+  border-radius: 4px;
+  padding: 6px 10px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  width: fit-content;
+  min-width: 124px;
 }
 
-.kta-info-item {
-  background: linear-gradient(135deg, #90caf9 0%, #64b5f6 100%);
-  border-radius: 4px;
-  padding: 6px 8px;
+.kta-masa-label {
+  font-size: 8px;
+  font-weight: 600;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin-bottom: 2px;
 }
 
-.kta-info-item .kta-info-value {
+.kta-masa-berlaku .kta-info-value {
   font-size: 10px;
   font-weight: 700;
-  color: var(--text);
-  text-align: center;
-  display: block;
+  color: #ffffff;
 }
 
-.kta-bottom-row {
+.kta-jabatan {
+  margin-top: 6px;
+  margin-left: 68px;
+  background: #1565c0;
+  border-radius: 4px;
+  padding: 6px 10px;
   display: flex;
-  gap: 8px;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  width: fit-content;
+  min-width: 124px;
 }
 
-.kta-qr canvas,
-.kta-qr img {
-  width: 90px !important;
-  height: 90px !important;
+.kta-jabatan-value {
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.kta-nama {
+  margin-left: 68px;
+  background: #1565c0;
+  border-radius: 4px;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: fit-content;
+  min-width: 124px;
+}
+
+.kta-nama-value {
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffffff;
 }
 
 /* --- Surat Preview --- */
@@ -956,4 +984,3 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
-
