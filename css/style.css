@@ -468,14 +468,13 @@ body {
 }
 
 /* --- KTA Card --- */
-/* --- KTA Card --- */
 .kta-card {
-  width: 260px;
-  height: 400px;
+  width: 204px;
+  height: 324px;
   background: var(--card);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
-  padding: 20px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -487,14 +486,14 @@ body {
 
 
 .kta-no-id {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--text);
-  margin-bottom: 12px;
+  margin-bottom: 6px;
   width: 100%;
   text-align: center;
-  margin-top: 70px;
-  margin-left: 52px;
+  margin-top: 40px;
+  margin-left: 40px;
 }
 
 .kta-no-id .id-label {
@@ -510,8 +509,8 @@ body {
 }
 
 .kta-photo {
-  width: 200px;
-  height: 160px;
+  width: 150px;
+  height: 120px;
   border-radius: var(--radius-sm);
   overflow: hidden;
   display: flex;
@@ -541,16 +540,16 @@ body {
 }
 
 .kta-masa-berlaku {
-  margin-top: 6px;
-  margin-left: 68px;
+  margin-top: 4px;
+  margin-left: 50px;
   background: #1565c0;
   border-radius: 4px;
-  padding: 6px 10px;
+  padding: 5px 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: fit-content;
-  min-width: 124px;
+  min-width: 100px;
 }
 
 .kta-masa-label {
@@ -562,44 +561,44 @@ body {
 }
 
 .kta-masa-berlaku .kta-info-value {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
   color: #ffffff;
 }
 
 .kta-jabatan {
-  margin-top: 6px;
-  margin-left: 68px;
+  margin-top: 4px;
+  margin-left: 50px;
   background: #1565c0;
   border-radius: 4px;
-  padding: 6px 10px;
+  padding: 5px 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: fit-content;
-  min-width: 124px;
+  min-width: 100px;
 }
 
 .kta-jabatan-value {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
   color: #ffffff;
 }
 
 .kta-nama {
-  margin-left: 68px;
+  margin-left: 50px;
   background: #1565c0;
   border-radius: 4px;
-  padding: 6px 10px;
+  padding: 5px 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: fit-content;
-  min-width: 124px;
+  min-width: 100px;
 }
 
 .kta-nama-value {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
   color: #ffffff;
 }
