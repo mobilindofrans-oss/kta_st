@@ -180,10 +180,12 @@ async function exportKTAPDF() {
     }
     loadSavedData();
 
+    // Capture the KTA card
     const canvas = await html2canvas(element, {
       scale: 2,
       useCORS: true,
-      logging: false
+      logging: false,
+      allowTaint: true
     });
 
     const imgData = canvas.toDataURL('image/png');
