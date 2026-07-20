@@ -190,9 +190,9 @@ async function exportKTAPDF() {
     }
     loadSavedData();
 
-    // Capture KTA tanpa foto
+    // Capture KTA
     const canvas = await html2canvas(element, {
-      scale: 2,
+      scale: 1,
       useCORS: true,
       logging: false,
       allowTaint: true
@@ -211,21 +211,18 @@ async function exportKTAPDF() {
         const cardRect = cardEl.getBoundingClientRect();
         const photoRect = photoEl.getBoundingClientRect();
         
-        // Posisi foto relatif terhadap card (dalam px, bukan scaled)
         const x = photoRect.left - cardRect.left;
         const y = photoRect.top - cardRect.top;
         const w = photoEl.clientWidth;
         const h = photoEl.clientHeight;
         
-        // Gambar di canvas (scale 2)
         const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, x * 2, y * 2, w * 2, h * 2);
+        ctx.drawImage(img, x, y, w, h);
       }
     }
 
     const imgData = canvas.toDataURL('image/png');
 
-    // Preview: 260px x 400px = 69.1mm x 105.8mm
     const pdfWidth = 69.1;
     const pdfHeight = 105.8;
     
