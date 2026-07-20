@@ -190,37 +190,27 @@ async function exportKTAPDF() {
     }
     loadSavedData();
 
-    // Capture KTA
+    // Capture KTA - sama seperti Surat Tugas
     const canvas = await html2canvas(element, {
       scale: 2,
       useCORS: true,
-      logging: false,
-      allowTaint: true
+      logging: false
     });
 
     const imgData = canvas.toDataURL('image/png');
 
-    // Ukuran PDF dari canvas: canvas width/height * (25.4/96) = mm
-    // Tapi html2canvas scale 2 = canvas 520px x 800px
-    // Kita gunakan rasio langsung dari canvas
-    const canvasWidth = canvas.width;   // 520px
-    const canvasHeight = canvas.height; // 800px
-    
-    // Rasio preview: 260x400 → PDF tetap 69.1x105.8mm
-    // Kita gunakan proporsi canvas untuk PDF
+    // PDF dengan proporsi yang benar
+    const ktaRatio = 260 / 400; // rasio preview
     const pdfWidth = 69.1;
-    const pdfHeight = pdfWidth * (canvasHeight / canvasWidth);
+    const pdfHeight = pdfWidth / ktaRatio;
     
-    // Gunakan pustaka jspdf dari window object global (sesuai impor UMD di HTML)
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({
+    const pdf = new jspdf.jsPDF({
       orientation: 'portrait',
       unit: 'mm',
       format: [pdfWidth, pdfHeight]
     });
 
-    // Masukkan gambar canvas ke dokumen PDF
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
     pdf.save('KTA_' + (nama.replace(/\s+/g, '_') || 'anggota') + '.pdf');
 
     if (typeof Swal !== 'undefined') { Swal.close(); }
