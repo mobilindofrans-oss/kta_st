@@ -180,21 +180,30 @@ async function exportKTAPDF() {
     }
     loadSavedData();
 
+    // Capture with higher scale for better quality
     const canvas = await html2canvas(element, {
-      scale: 3,
+      scale: 4,
       useCORS: true,
-      logging: false
+      logging: false,
+      width: 260,
+      height: 400,
+      windowWidth: 260,
+      windowHeight: 400
     });
 
     const imgData = canvas.toDataURL('image/png');
 
+    // Preview ratio: 260px x 400px = 69.1mm x 105.8mm
+    const pdfWidth = 69.1;
+    const pdfHeight = 105.8;
+    
     const pdf = new jspdf.jsPDF({
       orientation: 'portrait',
       unit: 'mm',
-      format: [53.98, 85.6]
+      format: [pdfWidth, pdfHeight]
     });
 
-    pdf.addImage(imgData, 'PNG', 0, 0, 53.98, 85.6);
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
     pdf.save('KTA_' + (nama || 'anggota') + '.pdf');
 
     resetKTAForm();
