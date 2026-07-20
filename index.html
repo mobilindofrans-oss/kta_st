@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Buat Kartu Tanda Anggota dan Surat Tugas secara online">
+  <meta name="theme-color" content="#ffffff">
+  <title>KTA & Surat Tugas Generator</title>
+  
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Dexie.js for IndexedDB -->
+  <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+  
+  <!-- html2canvas for capturing -->
+  <script src="https://unpkg.com/html2canvas@latest/dist/html2canvas.min.js"></script>
+  
+  <!-- jsPDF for PDF generation -->
+  <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+  
+  <!-- QR Code Generator -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+  <!-- App Bar -->
+  <header class="app-bar">
+    <div class="app-bar-content">
+      <img src="assets/logo.png" alt="Logo" class="app-bar-logo">
+    </div>
+  </header>
+  
+  <!-- Tab Navigation -->
+  <nav class="tab-nav">
+    <div class="tab-list">
+      <button class="tab-btn active" data-tab="kta">
+        <i class="fas fa-id-card"></i> KTA
+      </button>
+      <button class="tab-btn" data-tab="surat">
+        <i class="fas fa-file-alt"></i> Surat Tugas
+      </button>
+      <button class="tab-btn" data-tab="data">
+        <i class="fas fa-database"></i> Data Tersimpan
+      </button>
+    </div>
+  </nav>
+  
+  <!-- Main Content -->
+  <main class="main">
+    
+    <!-- Tab: KTA -->
+    <div id="tab-kta" class="tab-content active">
+      <form id="ktaForm" class="form-grid">
+        <!-- Form Inputs -->
+        <div class="form-col-inputs">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-icon">
+                <i class="fas fa-user-plus"></i>
+              </div>
+              <h2 class="card-title">Data Anggota</h2>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label form-label-required" for="namaKTA">Nama Lengkap</label>
+                <input type="text" id="namaKTA" class="form-input" placeholder="Masukkan nama lengkap" required>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label form-label-required" for="noIdKTA">No. ID Card</label>
+                <input type="text" id="noIdKTA" class="form-input" placeholder="Contoh: PERS.001/KTA/RED.FAKTAAKTUALTV.net" required>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label form-label-required" for="jabatanKTA">Jabatan</label>
+                <input type="text" id="jabatanKTA" class="form-input" placeholder="Contoh: Wartawan" required>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label form-label-required" for="masaBerlaku">Masa Berlaku</label>
+                <input type="text" id="masaBerlaku" class="form-input" placeholder="Contoh: 1 Juli 2026" required>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label form-label-required" for="fotoInput">Foto ID</label>
+                <div class="form-file">
+                  <input type="file" id="fotoInput" class="form-file-input" accept="image/*" required>
+                  <div class="form-file-label" id="fotoLabel">
+                    <div class="form-file-icon">
+                      <i class="fas fa-camera"></i>
+                    </div>
+                    <div class="form-file-text">
+                      <strong>Pilih foto</strong>
+                      <span>JPG, PNG (Maks. 2MB)</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-hint">Rekomendasi ukuran foto: 120 × 150 px (atau rasio 4:5)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Preview -->
+        <div class="form-col-preview">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-icon">
+                <i class="fas fa-id-card"></i>
+              </div>
+              <h2 class="card-title">Preview KTA</h2>
+            </div>
+            <div class="card-body-preview">
+              <div id="ktaTemplate" class="kta-card">
+                <img src="assets/logo.png" alt="Logo" class="kta-logo-img">
+                <div class="kta-no-id"><span class="id-label">ID:</span> <span id="previewNoId">-</span></div>
+                <div class="kta-photo">
+                  <img id="previewFoto" src="" alt="Foto" style="display: none;">
+                  <div id="previewFotoPlaceholder" class="kta-photo-placeholder">
+                    <i class="fas fa-user"></i><br>Foto
+                  </div>
+                </div>
+                <div class="kta-bottom-row">
+                  <div class="kta-qr" id="qrcode"></div>
+                  <div class="kta-info-list">
+                  <div class="kta-info-item">
+                    <span class="kta-info-value" id="previewNama">NAMA ANGGOTA</span>
+                  </div>
+                  <div class="kta-info-item">
+                    <span class="kta-info-value" id="previewJabatan">-</span>
+                  </div>
+                  <div class="kta-info-item">
+                    <span class="kta-info-value" id="previewMasaBerlaku">-</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+            <div class="card-footer">
+              <div class="btn-group">
+                <button type="button" class="btn btn-primary" id="saveKTA">
+                  <i class="fas fa-save"></i> Simpan
+                </button>
+                <button type="button" class="btn btn-pdf" id="exportKTA">
+                  <i class="fas fa-file-pdf"></i> Download PDF
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    
+    <!-- Tab: Surat Tugas -->
+    <div id="tab-surat" class="tab-content">
+      <form id="suratForm" class="form-grid">
+        <!-- Form Inputs -->
+        <div class="form-col-inputs">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-icon">
+                <i class="fas fa-file-signature"></i>
+              </div>
+              <h2 class="card-title">Data Surat Tugas</h2>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label form-label-required" for="nomorSurat">Nomor Surat</label>
+                <input type="text" id="nomorSurat" class="form-input" placeholder="Contoh: 001/KTA/RED/FAKTAAKTUALTV.NET">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required" for="namaSurat">Nama Lengkap</label>
+                <select id="namaSurat" class="form-select" required>
+                  <option value="">-- Pilih Nama --</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required" for="jabatanSurat">Jabatan</label>
+                <input type="text" id="jabatanSurat" class="form-input" placeholder="Contoh: Wartawan">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required" for="noIdSurat">Nomor ID Card</label>
+                <input type="text" id="noIdSurat" class="form-input" placeholder="Contoh: PERS.001/KTA/RED.FAKTAAKTUALTV.net">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label form-label-required" for="masaBerlakuSurat">Masa Berlaku</label>
+                <input type="text" id="masaBerlakuSurat" class="form-input" placeholder="Contoh: 1 Juli 2026">
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Preview -->
+        <div class="form-col-preview">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-header-icon">
+                <i class="fas fa-file-alt"></i>
+              </div>
+              <h2 class="card-title">Preview Surat</h2>
+            </div>
+            <div class="card-body-preview">
+              <div id="suratTemplate" class="surat-paper">
+                <!-- Kop Surat -->
+                <div class="kop-surat" style="text-align:center;margin-bottom:4px;display:flex;flex-direction:column;align-items:center;">
+                  <div style="display:flex;align-items:center;justify-content:center;margin-bottom:10px;">
+                    <img src="assets/logo.png" alt="Logo" style="height:100px;width:auto;object-fit:contain;">
+                  </div>
+                  <div style="border-bottom:2px solid black;width:100%;margin-bottom:2px;"></div>
+                  <div style="border-bottom:1px solid black;width:100%;margin-bottom:6px;"></div>
+                </div>
+
+                <div class="surat-title" style="text-align:center;">
+                  <h2 style="margin:0;text-decoration:underline;color:#002060;font-size:16pt;font-weight:bold;">SURAT TUGAS</h2>
+                  <p style="margin:2px 0 10px 0;">Nomor: <span id="previewNomorSurat">-</span></p>
+                </div>
+
+                <div class="content" style="text-align:justify;">
+                  <p style="text-indent:0;margin-bottom:12px;">Melalui surat ini, pimpinan redaksi <b>faktaaktualtv.net</b> menerangkan bahwa:</p>
+
+                  <table style="margin:15px 0;width:100%;border-collapse:collapse;">
+                    <tr><td style="padding:3px 0;vertical-align:top;width:150px;">Nama Lengkap</td><td style="padding:3px 0;vertical-align:top;width:15px;">:</td><td style="padding:3px 0;vertical-align:top;"><b><span id="previewNamaSurat" class="highlight">................................</span></b></td></tr>
+                    <tr><td style="padding:3px 0;vertical-align:top;width:150px;">Jabatan</td><td style="padding:3px 0;vertical-align:top;width:15px;">:</td><td style="padding:3px 0;vertical-align:top;"><b><span id="previewJabatanSurat">-</span></b></td></tr>
+                    <tr><td style="padding:3px 0;vertical-align:top;width:150px;">Nama Media</td><td style="padding:3px 0;vertical-align:top;width:15px;">:</td><td style="padding:3px 0;vertical-align:top;"><b>faktaaktualtv.net</b></td></tr>
+                    <tr><td style="padding:3px 0;vertical-align:top;width:150px;">Nomor ID Card</td><td style="padding:3px 0;vertical-align:top;width:15px;">:</td><td style="padding:3px 0;vertical-align:top;"><b><span id="previewNoIdSurat" style="font-size:12pt;">-</span></b></td></tr>
+                  </table>
+
+                  <p style="text-indent:0;margin-bottom:12px;">Menugaskan wartawan yang disebutkan namanya di atas untuk melakukan peliputan, pencarian berita, serta mengumpulkan iklan/advertorial atau sejenisnya demi mendukung kelancaran dan produktivitas media faktaaktualtv.net.</p>
+
+                  <p style="text-indent:0;margin-bottom:12px;">Dalam menjalankan tugasnya, pemegang surat ini mendapat perlindungan dari undang-undang no. 40 tahun 1999 tentang pers, khususnya pasal 18 ayat (1) yang menyatakan:</p>
+
+                  <p style="text-indent:0;margin-bottom:12px;"><b><i>"setiap orang yang secara melawan hukum dengan sengaja melakukan tindakan yang berakibat menghambat atau menghalangi pelaksanaan ketentuan pasal 4 ayat (2) dan (3) dipidana dengan pidana penjara paling lama 2 (dua) tahun atau denda paling banyak Rp. 500.000.000,- (lima ratus juta rupiah)"</i></b></p>
+
+                  <p style="text-indent:0;margin-bottom:12px;">Masa berlaku surat tugas ini adalah hingga <b><span id="previewMasaBerlakuSurat">1 Juli 2027</span></b>. Oleh karena itu, kami memohon kerja sama dari seluruh pihak untuk memberikan kemudahan bagi jurnalis kami dalam menjalankan tugas jurnalistiknya.</p>
+
+                  <p style="text-indent:0;">Demikian surat penugasan ini dibuat dengan sebenar-benarnya agar dapat digunakan dengan sungguh-sungguh dan sebagaimana mestinya. Atas bantuan serta kerja sama dari semua pihak, kami sampaikan terima kasih.</p>
+                </div>
+
+                <!-- area bawah: foto (kiri), qr (tengah), tanda tangan (kanan) -->
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1cm;">
+                  <div style="width:3cm;height:3.5cm;background-color:#e0e0e0;border:1px solid #000;display:flex;align-items:center;justify-content:center;color:#555;font-size:10pt;">
+                    <img id="previewFotoSurat" src="" alt="Foto" style="display:none;width:100%;height:100%;object-fit:cover;">
+                    <span id="previewFotoSuratPlaceholder">[foto 3x4]</span>
+                  </div>
+                  
+                  <div style="text-align:center;padding-left:40px;padding-right:10px;">
+                    <div id="qrcodeSurat"></div>
+                  </div>
+
+                  <div style="width:250px;text-align:center;">
+                    <p>Karawang, <span id="previewTanggalSurat">__ / __ / ____</span></p>
+                    <p>Pimpinan Redaksi</p>
+                    <div style="height:2cm;position:relative;">
+                      <img src="assets/stempel.png" alt="stempel" style="height:100px;width:auto;object-fit:contain;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1;">
+                      <img src="assets/ttd.png" alt="ttd" style="height:80px;width:auto;object-fit:contain;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;">
+                    </div>
+                    <p><b>SANDI PRAWIRA</b></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="btn-group">
+                <button type="button" class="btn btn-primary" id="saveSurat">
+                  <i class="fas fa-save"></i> Simpan
+                </button>
+                <button type="button" class="btn btn-pdf" id="exportSurat">
+                  <i class="fas fa-file-pdf"></i> Download PDF
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    
+    <!-- Tab: Data Tersimpan -->
+    <div id="tab-data" class="tab-content">
+      <!-- Data Anggota -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <h2 class="card-title">Data Anggota</h2>
+        </div>
+        <div class="card-body">
+          <div id="anggotaCardGrid" class="data-card-grid">
+            <div class="empty-state">
+              <div class="empty-state-icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="empty-state-text">Belum ada data anggota</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Data Surat Tugas -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-icon">
+            <i class="fas fa-file-alt"></i>
+          </div>
+          <h2 class="card-title">Data Surat Tugas</h2>
+        </div>
+        <div class="card-body">
+          <div id="suratCardGrid" class="data-card-grid">
+            <div class="empty-state">
+              <div class="empty-state-icon">
+                <i class="fas fa-file-alt"></i>
+              </div>
+              <div class="empty-state-text">Belum ada data surat tugas</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </main>
+  
+  <!-- Scripts -->
+  <script src="js/db.js"></script>
+  <script src="js/kta.js"></script>
+  <script src="js/surat.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
