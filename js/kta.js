@@ -181,52 +181,14 @@ async function exportKTAPDF() {
     loadSavedData();
 
     // Capture the KTA card
-    const capturedCanvas = await html2canvas(element, {
+    const canvas = await html2canvas(element, {
       scale: 2,
       useCORS: true,
       logging: false,
       allowTaint: true
     });
 
-    // Create final canvas with exact size
-    const finalCanvas = document.createElement('canvas');
-    finalCanvas.width = 520; // 260 * 2
-    finalCanvas.height = 800; // 400 * 2
-    const ctx = finalCanvas.getContext('2d');
-    
-    // Draw captured content
-    ctx.drawImage(capturedCanvas, 0, 0);
-
-    // If photo exists, redraw it at correct size
-    if (currentFoto) {
-      const imgElement = document.querySelector('#ktaTemplate .kta-photo img');
-      if (imgElement && imgElement.naturalWidth) {
-        const photoElement = document.querySelector('#ktaTemplate .kta-photo');
-        const photoRect = photoElement.getBoundingClientRect();
-        const elementRect = element.getBoundingClientRect();
-        
-        const photoX = (photoRect.left - elementRect.left) * 2;
-        const photoY = (photoRect.top - elementRect.top) * 2;
-        
-        // Get actual rendered size of the image
-        const renderedW = imgElement.clientWidth * 2;
-        const renderedH = imgElement.clientHeight * 2;
-        
-        // Center the image in the container
-        const containerW = photoRect.width * 2;
-        const containerH = photoRect.height * 2;
-        const offsetX = photoX + (containerW - renderedW) / 2;
-        const offsetY = photoY + (containerH - renderedH) / 2;
-        
-        const img = new Image();
-        img.src = currentFoto;
-        await new Promise((resolve) => { img.onload = resolve; });
-        
-        ctx.drawImage(img, offsetX, offsetY, renderedW, renderedH);
-      }
-    }
-
-    const imgData = finalCanvas.toDataURL('image/png');
+    const imgData = canvas.toDataURL('image/png');
 
     // Preview ratio: 260px x 400px = 69.1mm x 105.8mm
     const pdfWidth = 69.1;
