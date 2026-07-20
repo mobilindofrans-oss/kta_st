@@ -181,12 +181,21 @@ async function exportKTAPDF() {
     loadSavedData();
 
     // Capture the KTA card
-    const canvas = await html2canvas(element, {
+    const canvas = document.createElement('canvas');
+    canvas.width = 260;
+    canvas.height = 400;
+    const ctx = canvas.getContext('2d');
+    
+    const capturedCanvas = await html2canvas(element, {
       scale: 2,
       useCORS: true,
       logging: false,
-      allowTaint: true
+      allowTaint: true,
+      width: 260,
+      height: 400
     });
+    
+    ctx.drawImage(capturedCanvas, 0, 0, 260, 400);
 
     const imgData = canvas.toDataURL('image/png');
 
