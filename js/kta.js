@@ -181,23 +181,44 @@ async function exportKTAPDF() {
     loadSavedData();
 
     // Capture the KTA card
-    const canvas = document.createElement('canvas');
-    canvas.width = 260;
-    canvas.height = 400;
-    const ctx = canvas.getContext('2d');
-    
     const capturedCanvas = await html2canvas(element, {
       scale: 2,
       useCORS: true,
       logging: false,
-      allowTaint: true,
-      width: 260,
-      height: 400
+      allowTaint: true
     });
-    
-    ctx.drawImage(capturedCanvas, 0, 0, 260, 400);
 
-    const imgData = canvas.toDataURL('image/png');
+    // Create final canvas with exact size
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = 520; // 260 * 2
+    finalCanvas.height = 800; // 400 * 2
+    const ctx = finalCanvas.getContext('2d');
+    
+    // Draw captured content
+    ctx.drawImage(capturedCanvas, 0, 0);
+
+    // If photo exists, redraw it at correct size
+    if (currentFoto) {
+      const photoElement = document.querySelector('#ktaTemplate .kta-photo');
+      if (photoElement) {
+        const photoRect = photoElement.getBoundingClientRect();
+        const elementRect = element.getBoundingClientRect();
+        
+        const photoX = (photoRect.left - elementRect.left) * 2;
+        const photoY = (photoRect.top - elementRect.top) * 2;
+        const photoW = 200 * 2; // 200px width
+        const photoH = 160 * 2; // 160px height
+        
+        const img = new Image();
+        img.src = currentFoto;
+        await new Promise((resolve) => { img.onload = resolve; });
+        
+        // Draw photo to fill the container
+        ctx.drawImage(img, photoX, photoY, photoW, photoH);
+      }
+    }
+
+    const imgData = finalCanvas.toDataURL('image/png');
 
     // Preview ratio: 260px x 400px = 69.1mm x 105.8mm
     const pdfWidth = 69.1;
