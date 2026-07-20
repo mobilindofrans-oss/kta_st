@@ -167,7 +167,17 @@ async function exportKTAPDF() {
   const element = document.getElementById('ktaTemplate');
 
   try {
-    // Auto-save before PDF
+    // Tampilkan loading indicator (opsional, menggunakan SweetAlert2 jika aktif)
+    if (typeof Swal !== 'undefined') {
+      Swal.fire({
+        title: 'Memproses PDF...',
+        text: 'Mohon tunggu sebentar',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+      });
+    }
+
+    // Auto-save sebelum PDF
     const anggota = { nama, noId, jabatan, masaBerlaku, foto: currentFoto };
     const editId = document.getElementById('ktaForm').dataset.editId;
 
@@ -180,12 +190,28 @@ async function exportKTAPDF() {
     }
     loadSavedData();
 
-    // Capture the KTA card
+    // PERBAIKAN UTAMA: Pastikan semua gambar di dalam KTA benar-benar selesai dimuat sebelum dicapture
+    const images = element.getElementsByTagName('img');
+    const imagePromises = Array.from(images).map(img => {
+      if (img.src && !img.complete) {
+        return new Promise(resolve => {
+          img.onload = resolve;
+          img.onerror = resolve;
+        });
+      }
+      return Promise.resolve();
+    });
+    
+    await Promise.all(imagePromises);
+
+    // Capture KTA dengan konfigurasi optimasi render objek gambar
     const canvas = await html2canvas(element, {
-      scale: 2,
+      scale: 3, // Ditingkatkan ke 3 untuk ketajaman teks dan gambar yang lebih tinggi
       useCORS: true,
       logging: false,
-      allowTaint: true
+      allowTaint: false, // Diubah ke false jika menggunakan useCORS agar tidak mengotori canvas
+      imageTimeout: 0,   // Menghilangkan batasan waktu tunggu muat gambar
+      backgroundColor: null // Menjaga transparansi atau warna dasar bawaan CSS
     });
 
     const imgData = canvas.toDataURL('image/png');
@@ -194,18 +220,24 @@ async function exportKTAPDF() {
     const pdfWidth = 69.1;
     const pdfHeight = 105.8;
     
-    const pdf = new jspdf.jsPDF({
+    // Gunakan pustaka jspdf dari window object global (sesuai impor UMD di HTML)
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
       format: [pdfWidth, pdfHeight]
     });
 
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    pdf.save('KTA_' + (nama || 'anggota') + '.pdf');
+    // Masukkan gambar canvas ke dokumen PDF
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+    pdf.save('KTA_' + (nama.replace(/\s+/g, '_') || 'anggota') + '.pdf');
 
+    if (typeof Swal !== 'undefined') { Swal.close(); }
+    
     resetKTAForm();
     showToast('Data tersimpan & PDF berhasil di-download!', 'success');
   } catch (error) {
-    showToast('Gagal: ' + error.message, 'error');
+    if (typeof Swal !== 'undefined') { Swal.close(); }
+    showToast('Gagal mencetak PDF: ' + error.message, 'error');
   }
 }
