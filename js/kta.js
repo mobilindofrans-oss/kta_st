@@ -185,10 +185,12 @@ async function exportKTAPDF() {
       scale: 4,
       useCORS: true,
       logging: false,
-      width: 260,
-      height: 400,
-      windowWidth: 260,
-      windowHeight: 400
+      width: element.scrollWidth,
+      height: element.scrollHeight,
+      x: 0,
+      y: 0,
+      scrollX: 0,
+      scrollY: 0
     });
 
     const imgData = canvas.toDataURL('image/png');
