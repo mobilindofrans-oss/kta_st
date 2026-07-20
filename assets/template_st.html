@@ -1,1 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surat tugas</title>
+    <style>
+        body {
+            background-color: #525659;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            font-family: "times new roman", times, serif;
+        }
+        .a4-page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 2.54cm;
+            box-sizing: border-box;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            font-size: 12pt;
+            line-height: 1.5;
+            position: relative;
+        }
+        /* area kop surat */
+        .kop-surat {
+            text-align: center;
+            margin-bottom: 4px;
+            height: 3.5cm;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        .surat-title {
+            text-align: center;
+            margin-top: 0;
+        }
+        .surat-title h2 {
+            margin: 0;
+            text-decoration: underline;
+            color: #002060;
+            font-size: 16pt;
+            font-weight: bold;
+        }
+        .surat-title p {
+            margin: 2px 0 10px 0;
+        }
+        .content {
+            text-align: justify;
+        }
+        .data-table {
+            margin: 15px 0;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .data-table td {
+            padding: 3px 0;
+            vertical-align: top;
+        }
+        .data-table td:first-child {
+            width: 150px;
+        }
+        .data-table td:nth-child(2) {
+            width: 15px;
+        }
+        /* area footer 3 kolom */
+        .footer-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* diatur ke center agar sejajar seimbang dengan ruang tanda tangan */
+            margin-top: 1cm;
+        }
+        .photo-box {
+            width: 3cm;
+            height: 4cm;
+            background-color: #e0e0e0;
+            border: 1px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            font-size: 10pt;
+        }
+        .qr-box {
+            text-align: center;
+        }
+        .signature-box {
+            width: 250px;
+            text-align: center;
+        }
+        .signature-space {
+            height: 2.5cm;
+        }
+    </style>
+</head>
+<body>
+    <div class="a4-page">
+        <!-- area kop surat disisakan ruang kosong dengan garis bawah -->
+        <div class="kop-surat">
+            <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+                <img src="logo.png" alt="Logo" style="height: 150px; width: auto; object-fit: contain;">
+            </div>
+            <div style="border-bottom: 2px solid black; width: 100%; margin-bottom: 2px;"></div>
+            <div style="border-bottom: 1px solid black; width: 100%; margin-bottom: 6px;"></div>
+        </div>
 
+        <div class="surat-title">
+            <h2>SURAT TUGAS</h2>
+            <p>Nomor: </p>
+        </div>
+
+        <div class="content">
+            <p>Melalui surat ini, pimpinan redaksi faktaaktualtv.net menerangkan bahwa:</p>
+
+            <table class="data-table">
+                <tr>
+                    <td>Nama Lengkap</td>
+                    <td>:</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Jabatan</td>
+                    <td>:</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Nama Media</td>
+                    <td>:</td>
+                    <td>faktaaktualtv.net</td>
+                </tr>
+                <tr>
+                    <td>Nomor ID Card</td>
+                    <td>:</td>
+                    <td></td>
+                </tr>
+            </table>
+
+            <p>Menugaskan wartawan yang disebutkan namanya di atas untuk melakukan peliputan, pencarian berita, serta mengumpulkan iklan/advertorial atau sejenisnya demi mendukung kelancaran dan produktivitas media faktaaktualtv.net.</p>
+
+            <p>Dalam menjalankan tugasnya, pemegang surat ini mendapat perlindungan dari undang-undang no. 40 tahun 1999 tentang pers, khususnya pasal 18 ayat (1) yang menyatakan:</p>
+
+            <p><i>"setiap orang yang secara melawan hukum dengan sengaja melakukan tindakan yang berakibat menghambat atau menghalangi pelaksanaan ketentuan pasal 4 ayat (2) dan (3) dipidana dengan pidana penjara paling lama 2 (dua) tahun atau denda paling banyak rp. 500.000.000,- (lima ratus juta rupiah)"</i></p>
+
+            <p>Masa berlaku surat tugas ini adalah hingga tanggal 1 juli 2027. Oleh karena itu, kami memohon kerja sama dari seluruh pihak untuk memberikan kemudahan bagi jurnalis kami dalam menjalankan tugas jurnalistiknya.</p>
+
+            <p>Demikian surat penugasan ini dibuat dengan sebenar-benarnya agar dapat digunakan dengan sungguh-sungguh dan sebagaimana mestinya. Atas bantuan serta kerja sama dari semua pihak, kami sampaikan terima kasih.</p>
+        </div>
+
+        <!-- area bawah: foto (kiri), qr (tengah), tanda tangan (kanan) -->
+        <div class="footer-section">
+            <div class="photo-box">
+                [foto 3x4]
+            </div>
+            
+            <div class="qr-box">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=faktaaktualtv.net" alt="qr code">
+            </div>
+
+            <div class="signature-box">
+                <p>Karawang, ........................ 20....</p>
+                <p>Pimpinan Redaksi</p>
+                <div class="signature-space"></div>
+                <p><b>SANDI PRAWIRA</b></p>
+            </div>
+        </div>
+        
+        <div style="clear: both;"></div>
+    </div>
+</body>
+</html>
