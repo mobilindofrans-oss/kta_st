@@ -200,8 +200,16 @@ async function exportKTAPDF() {
 
     const imgData = canvas.toDataURL('image/png');
 
+    // Ukuran PDF dari canvas: canvas width/height * (25.4/96) = mm
+    // Tapi html2canvas scale 2 = canvas 520px x 800px
+    // Kita gunakan rasio langsung dari canvas
+    const canvasWidth = canvas.width;   // 520px
+    const canvasHeight = canvas.height; // 800px
+    
+    // Rasio preview: 260x400 → PDF tetap 69.1x105.8mm
+    // Kita gunakan proporsi canvas untuk PDF
     const pdfWidth = 69.1;
-    const pdfHeight = 105.8;
+    const pdfHeight = pdfWidth * (canvasHeight / canvasWidth);
     
     // Gunakan pustaka jspdf dari window object global (sesuai impor UMD di HTML)
     const { jsPDF } = window.jspdf;
