@@ -192,34 +192,11 @@ async function exportKTAPDF() {
 
     // Capture KTA
     const canvas = await html2canvas(element, {
-      scale: 1,
+      scale: 2,
       useCORS: true,
       logging: false,
       allowTaint: true
     });
-
-    // Jika ada foto, gambar ulang dengan ukuran tepat
-    if (currentFoto) {
-      const img = new Image();
-      img.src = currentFoto;
-      await new Promise(resolve => { img.onload = resolve; });
-      
-      const photoEl = element.querySelector('.kta-photo');
-      const cardEl = element;
-      
-      if (photoEl) {
-        const cardRect = cardEl.getBoundingClientRect();
-        const photoRect = photoEl.getBoundingClientRect();
-        
-        const x = photoRect.left - cardRect.left;
-        const y = photoRect.top - cardRect.top;
-        const w = photoEl.clientWidth;
-        const h = photoEl.clientHeight;
-        
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, x, y, w, h);
-      }
-    }
 
     const imgData = canvas.toDataURL('image/png');
 
