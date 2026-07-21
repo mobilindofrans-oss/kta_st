@@ -177,6 +177,23 @@ function resetSuratForm() {
 
 function printSurat() {
   const suratContent = document.getElementById('suratTemplate');
+  
+  // Clone content and replace background-image divs with img elements for print compatibility
+  const clone = suratContent.cloneNode(true);
+  const fotoDiv = clone.querySelector('#previewFotoSurat');
+  const fotoPlaceholder = clone.querySelector('#previewFotoSuratPlaceholder');
+  if (fotoDiv && fotoDiv.style.backgroundImage) {
+    const src = fotoDiv.style.backgroundImage.slice(5, -2); // extract url(...)
+    const img = document.createElement('img');
+    img.src = src;
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+    fotoDiv.parentNode.replaceChild(img, fotoDiv);
+    if (fotoPlaceholder) fotoPlaceholder.remove();
+  } else if (fotoPlaceholder) {
+    fotoPlaceholder.style.display = 'block';
+    if (fotoDiv) fotoDiv.remove();
+  }
+
   const printWindow = window.open('', '_blank');
   
   printWindow.document.write(`
@@ -187,7 +204,7 @@ function printSurat() {
       <style>
         @page {
           size: A4;
-          margin: 15mm 20mm 20mm;
+          margin: 10mm 18mm 15mm;
         }
         
         * {
@@ -198,8 +215,8 @@ function printSurat() {
         
         body {
           font-family: 'Times New Roman', Times, serif;
-          font-size: 14px;
-          line-height: 1.8;
+          font-size: 12px;
+          line-height: 1.5;
           color: #000;
           background: #fff;
           display: flex;
@@ -211,19 +228,20 @@ function printSurat() {
           background: white;
           width: 210mm;
           min-height: 297mm;
-          padding: 10px 45px;
+          padding: 5px 40px;
           box-shadow: none;
         }
         
         .kop-surat { text-align:center; }
+        .kop-surat img { height:80px; }
         .surat-title { text-align:center; }
-        .surat-title h2 { margin:0; text-decoration:underline; color:#002060; font-size:16pt; font-weight:bold; }
-        .surat-title p { margin:2px 0 10px 0; }
+        .surat-title h2 { margin:0; font-size:14pt; }
+        .surat-title p { margin:0 0 6px 0; font-size:12px; }
         .content { text-align:justify; }
-        .content p { margin-bottom:15px; text-indent:40px; }
+        .content p { margin-bottom:8px; text-indent:30px; font-size:12px; }
         .highlight { font-weight:bold; text-decoration:underline; }
-        table { margin:15px 0; width:100%; border-collapse:collapse; }
-        table td { padding:3px 0; vertical-align:top; }
+        table { margin:8px 0; width:100%; border-collapse:collapse; }
+        table td { padding:1px 0; vertical-align:top; font-size:12px; }
         
         @media print {
           body { background: none; padding: 0; }
@@ -232,7 +250,7 @@ function printSurat() {
       </style>
     </head>
     <body>
-      ${suratContent.outerHTML}
+      ${clone.outerHTML}
     </body>
     </html>
   `);
