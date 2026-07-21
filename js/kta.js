@@ -78,7 +78,7 @@ function updateKTAPreview() {
   
   const previewFoto = document.getElementById('previewFoto');
   if (currentFoto) {
-    previewFoto.src = currentFoto;
+    previewFoto.style.backgroundImage = 'url(' + currentFoto + ')';
     previewFoto.style.display = 'block';
     document.getElementById('previewFotoPlaceholder').style.display = 'none';
   }
@@ -125,7 +125,9 @@ async function saveKTA() {
 function resetKTAForm() {
   document.getElementById('ktaForm').reset();
   currentFoto = null;
-  document.getElementById('previewFoto').style.display = 'none';
+  const previewFoto = document.getElementById('previewFoto');
+  previewFoto.style.backgroundImage = '';
+  previewFoto.style.display = 'none';
   document.getElementById('previewFotoPlaceholder').style.display = 'block';
   const label = document.getElementById('fotoLabel');
   label.classList.remove('has-file');
