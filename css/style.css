@@ -542,7 +542,7 @@ body {
 .kta-masa-berlaku {
   margin-top: 6px;
   margin-left: 68px;
-  background: #1565c0;
+  background: var(--primary);
   border-radius: 4px;
   padding: 6px 10px;
   display: flex;
@@ -569,7 +569,7 @@ body {
 .kta-jabatan {
   margin-top: 6px;
   margin-left: 68px;
-  background: #1565c0;
+  background: var(--primary);
   border-radius: 4px;
   padding: 6px 10px;
   display: flex;
@@ -587,7 +587,7 @@ body {
 
 .kta-nama {
   margin-left: 68px;
-  background: #1565c0;
+  background: var(--primary);
   border-radius: 4px;
   padding: 6px 10px;
   display: flex;
@@ -924,6 +924,10 @@ body {
   }
   
   .tab-content {
+    display: none !important;
+  }
+  
+  .tab-content.active {
     display: block !important;
   }
 }
