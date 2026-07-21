@@ -52,11 +52,6 @@ function switchTab(tab) {
 
 async function loadSavedData() {
   try {
-    // Tunggu database siap
-    if (typeof db !== 'undefined' && db !== null) {
-      await db.open();
-    }
-    
     const anggota = await getSemuaAnggota();
     const surat = await getSemuaSurat();
     
@@ -217,31 +212,18 @@ async function editSurat(id) {
   // Switch to Surat tab
   switchTab('surat');
   
-  // Find matching option in dropdown by nama
+  // Set dropdown by matching nama, trigger auto-fill
   const namaSelect = document.getElementById('namaSurat');
   for (let i = 0; i < namaSelect.options.length; i++) {
     if (namaSelect.options[i].textContent === surat.nama) {
       namaSelect.selectedIndex = i;
+      namaSelect.dispatchEvent(new Event('change'));
       break;
     }
   }
   
-  // Fill form
-  if (document.getElementById('nomorSurat')) document.getElementById('nomorSurat').value = surat.nomorSurat || '';
-  if (document.getElementById('jabatanSurat')) document.getElementById('jabatanSurat').value = surat.jabatan || '';
-  if (document.getElementById('noIdSurat')) document.getElementById('noIdSurat').value = surat.noId || '';
-  if (document.getElementById('masaBerlakuSurat')) document.getElementById('masaBerlakuSurat').value = surat.masaBerlaku || '';
-  if (surat.foto) {
-    currentFoto = surat.foto;
-    // Update foto preview
-    const fotoSurat = document.getElementById('previewFotoSurat');
-    const fotoPlaceholder = document.getElementById('previewFotoSuratPlaceholder');
-    if (fotoSurat && fotoPlaceholder) {
-      fotoSurat.src = surat.foto;
-      fotoSurat.style.display = 'block';
-      fotoPlaceholder.style.display = 'none';
-    }
-  }
+  // Set nomorSurat (not auto-filled by onNamaSelect)
+  document.getElementById('nomorSurat').value = surat.nomorSurat || '';
   
   updateSuratPreview();
   
@@ -292,4 +274,3 @@ function confirmHapusSurat(id) {
 
 // Initialize app
 initApp();
-
