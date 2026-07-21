@@ -110,7 +110,7 @@ function updateSuratPreview() {
   const fotoSurat = document.getElementById('previewFotoSurat');
   const fotoPlaceholder = document.getElementById('previewFotoSuratPlaceholder');
   if (fotoSurat && fotoPlaceholder && typeof currentFoto !== 'undefined' && currentFoto) {
-    fotoSurat.src = currentFoto;
+    fotoSurat.style.backgroundImage = 'url(' + currentFoto + ')';
     fotoSurat.style.display = 'block';
     fotoPlaceholder.style.display = 'none';
   }
