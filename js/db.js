@@ -1,5 +1,6 @@
 // Dexie Database Setup
 let db;
+let currentFoto = null;
 
 if (typeof Dexie !== 'undefined') {
   db = new Dexie('OrganisasiDB');
