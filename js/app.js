@@ -185,7 +185,7 @@ async function editAnggota(id) {
   if (anggota.foto) {
     currentFoto = anggota.foto;
     const previewFoto = document.getElementById('previewFoto');
-    previewFoto.src = anggota.foto;
+    previewFoto.style.backgroundImage = 'url(' + anggota.foto + ')';
     previewFoto.style.display = 'block';
     document.getElementById('previewFotoPlaceholder').style.display = 'none';
     
