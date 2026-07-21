@@ -14,13 +14,13 @@
   <link rel="stylesheet" href="css/style.css">
   
   <!-- Dexie.js for IndexedDB -->
-  <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+  <script src="https://unpkg.com/dexie@3.2.6/dist/dexie.js"></script>
   
   <!-- html2canvas for capturing -->
-  <script src="https://unpkg.com/html2canvas@latest/dist/html2canvas.min.js"></script>
+  <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   
   <!-- jsPDF for PDF generation -->
-  <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
   
   <!-- QR Code Generator -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -169,7 +169,7 @@
             <div class="card-body">
               <div class="form-group">
                 <label class="form-label form-label-required" for="nomorSurat">Nomor Surat</label>
-                <input type="text" id="nomorSurat" class="form-input" placeholder="Contoh: 001/KTA/RED/FAKTAAKTUALTV.NET">
+                <input type="text" id="nomorSurat" class="form-input" placeholder="Contoh: 001/KTA/RED/FAKTAAKTUALTV.NET" required>
               </div>
 
               <div class="form-group">
@@ -181,17 +181,17 @@
 
               <div class="form-group">
                 <label class="form-label form-label-required" for="jabatanSurat">Jabatan</label>
-                <input type="text" id="jabatanSurat" class="form-input" placeholder="Contoh: Wartawan">
+                <input type="text" id="jabatanSurat" class="form-input" placeholder="Contoh: Wartawan" required>
               </div>
 
               <div class="form-group">
                 <label class="form-label form-label-required" for="noIdSurat">Nomor ID Card</label>
-                <input type="text" id="noIdSurat" class="form-input" placeholder="Contoh: PERS.001/KTA/RED.FAKTAAKTUALTV.net">
+                <input type="text" id="noIdSurat" class="form-input" placeholder="Contoh: PERS.001/KTA/RED.FAKTAAKTUALTV.net" required>
               </div>
 
               <div class="form-group">
                 <label class="form-label form-label-required" for="masaBerlakuSurat">Masa Berlaku</label>
-                <input type="text" id="masaBerlakuSurat" class="form-input" placeholder="Contoh: 1 Juli 2026">
+                <input type="text" id="masaBerlakuSurat" class="form-input" placeholder="Contoh: 1 Juli 2026" required>
               </div>
             </div>
           </div>
@@ -270,6 +270,9 @@
               <div class="btn-group">
                 <button type="button" class="btn btn-primary" id="saveSurat">
                   <i class="fas fa-save"></i> Simpan
+                </button>
+                <button type="button" class="btn btn-outline" id="printSurat">
+                  <i class="fas fa-print"></i> Cetak
                 </button>
                 <button type="button" class="btn btn-pdf" id="exportSurat">
                   <i class="fas fa-file-pdf"></i> Download PDF
