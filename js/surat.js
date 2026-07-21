@@ -45,12 +45,11 @@ async function loadNamaDropdown() {
     anggotaDataList = anggotaList;
     const select = document.getElementById('namaSurat');
     
-    // Keep first option
     select.innerHTML = '<option value="">-- Pilih Nama --</option>';
     
-    anggotaList.forEach((item, index) => {
+    anggotaList.forEach((item) => {
       const option = document.createElement('option');
-      option.value = index;
+      option.value = item.id;
       option.textContent = item.nama;
       select.appendChild(option);
     });
@@ -59,17 +58,23 @@ async function loadNamaDropdown() {
   }
 }
 
+function getSelectedAnggota() {
+  const select = document.getElementById('namaSurat');
+  const id = parseInt(select.value);
+  if (!isNaN(id)) {
+    return anggotaDataList.find(a => a.id === id) || null;
+  }
+  return null;
+}
+
 function onNamaSelect(e) {
-  const select = e.target;
-  const selectedIndex = parseInt(select.value);
+  const anggota = getSelectedAnggota();
   
-  if (!isNaN(selectedIndex) && anggotaDataList[selectedIndex]) {
-    const anggota = anggotaDataList[selectedIndex];
+  if (anggota) {
     document.getElementById('jabatanSurat').value = anggota.jabatan || '';
     document.getElementById('noIdSurat').value = anggota.noId || '';
     document.getElementById('masaBerlakuSurat').value = anggota.masaBerlaku || '';
     
-    // Set foto from KTA
     if (anggota.foto) {
       currentFoto = anggota.foto;
     }
@@ -125,9 +130,8 @@ function formatTanggal(tanggal) {
 }
 
 async function saveSurat() {
-  const namaSelect = document.getElementById('namaSurat');
-  const selectedIndex = parseInt(namaSelect.value);
-  const nama = !isNaN(selectedIndex) && anggotaDataList[selectedIndex] ? anggotaDataList[selectedIndex].nama : '';
+  const anggota = getSelectedAnggota();
+  const nama = anggota ? anggota.nama : '';
   const jabatan = document.getElementById('jabatanSurat').value;
   const noId = document.getElementById('noIdSurat').value;
   const masaBerlaku = document.getElementById('masaBerlakuSurat').value;
@@ -153,7 +157,7 @@ async function saveSurat() {
     if (editId) {
       await updateSurat(Number(editId), surat);
       showToast('Data surat berhasil diupdate!', 'success');
-      delete document.getElementById('suratForm').dataset.editId;
+      document.getElementById('suratForm').removeAttribute('data-edit-id');
       document.getElementById('saveSurat').innerHTML = '<i class="fas fa-save"></i> Simpan';
     } else {
       await tambahSurat(surat);
@@ -168,10 +172,6 @@ async function saveSurat() {
 
 function resetSuratForm() {
   document.getElementById('suratForm').reset();
-  document.getElementById('nomorSurat').value = '';
-  document.getElementById('jabatanSurat').value = '';
-  document.getElementById('noIdSurat').value = '';
-  document.getElementById('masaBerlakuSurat').value = '';
   updateSuratPreview();
 }
 
@@ -187,7 +187,7 @@ function printSurat() {
       <style>
         @page {
           size: A4;
-          margin: 25mm;
+          margin: 15mm 20mm 20mm;
         }
         
         * {
@@ -201,18 +201,18 @@ function printSurat() {
           font-size: 14px;
           line-height: 1.8;
           color: #000;
-          background: #f0f0f0;
+          background: #fff;
           display: flex;
           justify-content: center;
-          padding: 20px;
+          padding: 0;
         }
         
         .surat-paper {
           background: white;
           width: 210mm;
           min-height: 297mm;
-          padding: 40px 50px;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          padding: 10px 45px;
+          box-shadow: none;
         }
         
         .kop-surat { text-align:center; }
@@ -263,9 +263,8 @@ async function exportSuratPDF() {
     
     pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
     
-    const namaSelect = document.getElementById('namaSurat');
-    const selectedIndex = parseInt(namaSelect.value);
-    const nama = !isNaN(selectedIndex) && anggotaDataList[selectedIndex] ? anggotaDataList[selectedIndex].nama : 'tugas';
+    const anggota = getSelectedAnggota();
+    const nama = anggota ? anggota.nama : 'tugas';
     
     pdf.save('Surat_Tugas_' + nama + '.pdf');
     
