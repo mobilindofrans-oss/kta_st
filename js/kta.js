@@ -1,13 +1,9 @@
 // KTA Template & Logic
-let currentFoto = null;
 
 // Initialize KTA form
 function initKTA() {
   const form = document.getElementById('ktaForm');
   const fotoInput = document.getElementById('fotoInput');
-  
-  // Generate QR Code
-  generateQRCode();
   
   // Handle foto upload
   fotoInput.addEventListener('change', handleFotoUpload);
@@ -22,21 +18,6 @@ function initKTA() {
   
   // Handle save button
   document.getElementById('saveKTA').addEventListener('click', saveKTA);
-}
-
-function generateQRCode() {
-  if (typeof QRCode === 'undefined') return;
-  const qrcodeContainer = document.getElementById('qrcode');
-  if (qrcodeContainer) {
-    new QRCode(qrcodeContainer, {
-      text: 'https://faktaaktualtv.net',
-      width: 90,
-      height: 90,
-      colorDark: '#000000',
-      colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.M
-    });
-  }
 }
 
 function handleFotoUpload(e) {
@@ -128,7 +109,7 @@ async function saveKTA() {
     if (editId) {
       await updateAnggota(Number(editId), anggota);
       showToast('Data berhasil diupdate!', 'success');
-      delete document.getElementById('ktaForm').dataset.editId;
+      document.getElementById('ktaForm').removeAttribute('data-edit-id');
       document.getElementById('saveKTA').innerHTML = '<i class="fas fa-save"></i> Simpan';
     } else {
       await tambahAnggota(anggota);
@@ -177,32 +158,22 @@ async function exportKTAPDF() {
       });
     }
 
-    // Auto-save sebelum PDF
-    const anggota = { nama, noId, jabatan, masaBerlaku, foto: currentFoto };
-    const editId = document.getElementById('ktaForm').dataset.editId;
-
-    if (editId) {
-      await updateAnggota(Number(editId), anggota);
-      delete document.getElementById('ktaForm').dataset.editId;
-      document.getElementById('saveKTA').innerHTML = '<i class="fas fa-save"></i> Simpan';
-    } else {
-      await tambahAnggota(anggota);
-    }
-    loadSavedData();
-
-    // Capture KTA - sama seperti Surat Tugas
+    // Capture KTA card
     const canvas = await html2canvas(element, {
       scale: 2,
       useCORS: true,
+      allowTaint: true,
       logging: false
     });
 
     const imgData = canvas.toDataURL('image/png');
 
-    // PDF dengan proporsi yang benar
-    const ktaRatio = 260 / 400; // rasio preview
-    const pdfWidth = 69.1;
-    const pdfHeight = pdfWidth / ktaRatio;
+    // CR80 portrait: 53.98mm x 85.6mm (standar kartu identitas)
+    // Sesuaikan dengan rasio asli card (260x400)
+    const cardWidth = 260;
+    const cardHeight = 400;
+    const pdfWidth = 53.98;
+    const pdfHeight = pdfWidth * (cardHeight / cardWidth);
     
     const pdf = new jspdf.jsPDF({
       orientation: 'portrait',
@@ -215,8 +186,7 @@ async function exportKTAPDF() {
 
     if (typeof Swal !== 'undefined') { Swal.close(); }
     
-    resetKTAForm();
-    showToast('Data tersimpan & PDF berhasil di-download!', 'success');
+    showToast('PDF berhasil di-download!', 'success');
   } catch (error) {
     if (typeof Swal !== 'undefined') { Swal.close(); }
     showToast('Gagal mencetak PDF: ' + error.message, 'error');
