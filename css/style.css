@@ -526,6 +526,14 @@ body {
   object-fit: contain;
 }
 
+.kta-photo-img {
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 .kta-photo-placeholder {
   text-align: center;
   color: var(--text-hint);
